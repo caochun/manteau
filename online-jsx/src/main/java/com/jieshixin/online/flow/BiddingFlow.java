@@ -1,5 +1,7 @@
 package com.jieshixin.online.flow;
 
+import com.qwlabs.graphql.builder.Gql;
+import com.qwlabs.graphql.builder.GqlField;
 import info.nemoworks.manteau.flow.core.AbstractProcess;
 import info.nemoworks.manteau.flow.core.Task;
 import org.apache.commons.scxml2.model.ModelException;
@@ -8,7 +10,7 @@ import java.util.List;
 
 public class BiddingFlow extends AbstractProcess {
 
-    Gql gql=Gql.query("contents")
+    Gql gql= Gql.query("contents")
             .fields(GqlField.of("nodes").fields("id","content","createdAt"),
                     GqlField.of("totalCount"),
                     GqlField.of("pageInfo").fields("limit","offset"));

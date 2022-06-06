@@ -1,12 +1,13 @@
 package info.nemoworks.menteau.graphql;
 
-import graphql.schema.*;
+import graphql.schema.GraphQLCodeRegistry;
+import graphql.schema.GraphQLList;
+import graphql.schema.GraphQLNonNull;
+import graphql.schema.GraphQLType;
 import graphql.schema.idl.SchemaGenerator;
 import graphql.schema.idl.SchemaParser;
 import graphql.schema.idl.TypeDefinitionRegistry;
-import org.neo4j.driver.Driver;
-import org.neo4j.driver.Result;
-import org.neo4j.driver.SessionConfig;
+import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphql.Cypher;
 import org.neo4j.graphql.DataFetchingInterceptor;
 import org.neo4j.graphql.SchemaBuilder;
@@ -33,14 +34,6 @@ public class Neo4GraphQLConfig {
 
     @Value("classpath:schema.graphql")
     Resource graphQl;
-
-//
-//    @Bean
-//    GraphQLSchema graphQLSchema(DataFetchingInterceptor dataFetchingInterceptor) throws IOException {
-//        String schema = new String(graphQl.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
-//        GraphQLSchema graphQLSchema =  SchemaBuilder.buildSchema(schema, new SchemaConfig(), dataFetchingInterceptor);
-//        return graphQLSchema;
-//    }
 
     @Bean
     public GraphQlSourceBuilderCustomizer graphQlSourceBuilderCustomizer(DataFetchingInterceptor dataFetchingInterceptor) throws IOException {
@@ -70,26 +63,21 @@ public class Neo4GraphQLConfig {
 
     @Bean
     public DataFetchingInterceptor dataFetchingInterceptor(
-            Driver driver,
-            @Value("${database}") String database) {
+            @Autowired GraphDatabaseService graphDatabaseService) {
         return (env, delegate) -> {
             Cypher cypher = delegate.get(env);
-            return driver.session(SessionConfig.forDatabase(database)).writeTransaction(tx -> {
-                Map<String, Object> boltParams = new HashMap<>(cypher.getParams());
-                boltParams.replaceAll((key, value) -> toBoltValue(value));
+            Map<String, Object> boltParams = new HashMap<>(cypher.getParams());
+            boltParams.replaceAll((key, value) -> toBoltValue(value));
 
-                Result result = tx.run(cypher.getQuery(), boltParams);
+            return graphDatabaseService.executeTransactionally(cypher.getQuery(), boltParams, r -> {
                 if (isListType(cypher.getType())) {
-                    return result.list()
-                            .stream()
-                            .map(record -> record.get(cypher.getVariable()).asObject())
+                    return r.stream()
+                            .map(record -> record.get(cypher.getVariable()))
                             .collect(Collectors.toList());
                 } else {
-                    return result.list()
-                            .stream()
-                            .map(record -> record.get(cypher.getVariable()).asObject())
-                            .collect(Collectors.toList())
-                            .stream().findFirst()
+                    return r.stream()
+                            .map(record -> record.get(cypher.getVariable()))
+                            .findFirst()
                             .orElse(Collections.emptyMap());
                 }
             });

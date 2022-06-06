@@ -29,15 +29,9 @@
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.neo4j</groupId>
-            <artifactId>neo4j-graphql-java</artifactId>
-            <version>1.5.0</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>com.graphql-java</groupId>
-                    <artifactId>graphql-java</artifactId>
-                </exclusion>
-            </exclusions>
+            <groupId>info.nemoworks</groupId>
+            <artifactId>neo4j-graphql-java-core</artifactId>
+            <version>1.5.1</version>
         </dependency>
         <dependency>
             <groupId>com.graphql-java</groupId>

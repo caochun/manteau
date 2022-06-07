@@ -1,4 +1,4 @@
-package info.nemoworks.menteau.graphql;
+package com.jieshixin.online.config;
 
 import org.neo4j.configuration.connectors.BoltConnector;
 import org.neo4j.configuration.helpers.SocketAddress;

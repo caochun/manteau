@@ -16,10 +16,10 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>11</java.version>
-        <kotlin.version>1.6.10</kotlin.version>
+        <kotlin.version>1.6.21</kotlin.version>
         <kotlin.compiler.jvmTarget>${java.version}</kotlin.compiler.jvmTarget>
-        <neo4j.version>4.4.1</neo4j.version>
-        <neo4j-apoc.version>4.4.0.1</neo4j-apoc.version>
+        <neo4j.version>4.4.7</neo4j.version>
+        <neo4j-apoc.version>4.4.0.5</neo4j-apoc.version>
         <junit-jupiter.version>5.8.2</junit-jupiter.version>
     </properties>
 
@@ -47,11 +47,17 @@
             <version>${neo4j-apoc.version}</version>
             <classifier>all</classifier>
             <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.commons</groupId>
+                    <artifactId>commons-text</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.graphql-java</groupId>
             <artifactId>graphql-java</artifactId>
-            <version>17.3</version>
+            <version>18.1</version>
         </dependency>
         <dependency>
             <groupId>org.atteo</groupId>
@@ -61,6 +67,7 @@
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
+            <version>1.7.36</version>
         </dependency>
 
         <dependency>
@@ -76,12 +83,11 @@
         <dependency>
             <groupId>org.neo4j</groupId>
             <artifactId>neo4j-cypher-dsl</artifactId>
-            <version>2021.4.1</version>
+            <version>2022.4.0</version>
         </dependency>
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
-            <version>1.2.7</version>
             <scope>test</scope>
         </dependency>
         <dependency>

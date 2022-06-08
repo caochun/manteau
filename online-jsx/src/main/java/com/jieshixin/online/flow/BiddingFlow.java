@@ -1,9 +1,12 @@
 package com.jieshixin.online.flow;
 
+import graphql.GraphQL;
+import graphql.schema.GraphQLSchema;
 import info.nemoworks.manteau.flow.core.AbstractProcess;
 import info.nemoworks.manteau.flow.core.Task;
 import info.nemoworks.manteau.flow.graphql.GraphQlCommand;
 import org.apache.commons.scxml2.model.ModelException;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
@@ -17,6 +20,12 @@ public class BiddingFlow extends AbstractProcess {
 
     static String addBid1Creator1 = "mutation{ addBidCreator(id: \"bid1\", creator: \"user1\"){  creator{ name } } }";
 
+    GraphQL graphQL;
+
+    @Autowired
+    public void setGraphQL(GraphQL graphQL) {
+        this.graphQL = graphQL;
+    }
 
     private static final String SCXML_MODEL = "scxml/bidding.xml";
 
@@ -24,7 +33,8 @@ public class BiddingFlow extends AbstractProcess {
         super(BiddingFlow.class.getClassLoader().getResource(SCXML_MODEL));
         GraphQlCommand cu = new GraphQlCommand(userCreate);
 
-        cu.getSchema();
+
+        graphQL.execute(createUser1);
 
     }
 

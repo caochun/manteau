@@ -2,23 +2,31 @@ package com.jieshixin.online.flow;
 
 import info.nemoworks.manteau.flow.core.AbstractProcess;
 import info.nemoworks.manteau.flow.core.Task;
+import info.nemoworks.manteau.flow.graphql.GraphQlCommand;
 import org.apache.commons.scxml2.model.ModelException;
 
 import java.util.List;
 
 public class BiddingFlow extends AbstractProcess {
 
-//    Gql gql= Gql.query("contents")
-//            .fields(GqlField.of("nodes").fields("id","content","createdAt"),
-//                    GqlField.of("totalCount"),
-//                    GqlField.of("pageInfo").fields("limit","offset"));
-//
+    static String userCreate = """
+                    mutation{
+                      createUser(id:"user1", name: "Chun"){
+                        name
+                      }
+                    }
+            """;
+
+
 
 
     private static final String SCXML_MODEL = "scxml/bidchart.xml";
 
     public BiddingFlow() throws ModelException {
         super(BiddingFlow.class.getClassLoader().getResource(SCXML_MODEL));
+        GraphQlCommand cu = new GraphQlCommand(userCreate);
+        cu.getSchema();
+
     }
 
     @Override

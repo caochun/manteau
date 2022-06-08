@@ -1,0 +1,24 @@
+type Bid{
+    id: ID!
+    title: String!
+    creator: User
+    ctime: String
+    content: String
+    approved: Boolean
+    approver: User
+    atime: String
+    tracking: [Tracking]
+    finalized: Boolean
+}
+
+type Tracking{
+    id: ID!
+    tracker: User
+    ttime: String
+    tlog: String
+}
+
+type User{
+    id: ID!
+    name: String
+}

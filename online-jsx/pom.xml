@@ -21,6 +21,5 @@
             <artifactId>manteau-graphql</artifactId>
             <version>0.0.1</version>
         </dependency>
-
     </dependencies>
 </project>

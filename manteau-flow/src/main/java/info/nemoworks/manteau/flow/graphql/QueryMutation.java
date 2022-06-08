@@ -1,7 +1,7 @@
 package info.nemoworks.manteau.flow.graphql;
 
-import graphql.schema.idl.SchemaParser;
-import graphql.schema.idl.TypeDefinitionRegistry;
+import graphql.language.Document;
+import graphql.parser.Parser;
 
 public class QueryMutation{
 
@@ -14,8 +14,10 @@ public class QueryMutation{
     }
 
 
-    public TypeDefinitionRegistry getSchema(){
-        SchemaParser parser = new SchemaParser();
+    public Document getSchema(){
+        Parser parser = new Parser();
+
+
         return parser.parse(graphql);
     }
 

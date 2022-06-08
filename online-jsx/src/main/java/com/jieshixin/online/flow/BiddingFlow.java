@@ -9,22 +9,21 @@ import java.util.List;
 
 public class BiddingFlow extends AbstractProcess {
 
-    static String userCreate = """
-                    mutation{
-                      createUser(id:"user1", name: "Chun"){
-                        name
-                      }
-                    }
-            """;
+    static String createUser1 = "mutation{createUser(id:\"user1\", name: \"Alice\"){ name } }";
+    static String createUser2 = "mutation{createUser(id:\"user2\", name: \"Bob\"){ name } }";
+    static String createUser3 = "mutation{createUser(id:\"user2\", name: \"Tom\"){ name } }";
+
+    static String createBid1 = "mutation{createBid(id:\"bid1\", title:\"new\"){ id } }";
+
+    static String addBid1Creator1 = "mutation{ addBidCreator(id: \"bid1\", creator: \"user1\"){  creator{ name } } }";
 
 
-
-
-    private static final String SCXML_MODEL = "scxml/bidchart.xml";
+    private static final String SCXML_MODEL = "scxml/bidding.xml";
 
     public BiddingFlow() throws ModelException {
         super(BiddingFlow.class.getClassLoader().getResource(SCXML_MODEL));
         GraphQlCommand cu = new GraphQlCommand(userCreate);
+
         cu.getSchema();
 
     }

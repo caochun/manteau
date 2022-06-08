@@ -1,19 +1,19 @@
 type Bid{
     id: ID!
     title: String!
-    creator: User
+    creator: User @relation(from: "bid", to: "user", name: "CREATED_BY")
     ctime: String
     content: String
     approved: Boolean
-    approver: User
+    approver: User @relation(from: "bid", to: "user", name: "APPROVED_BY")
     atime: String
-    tracking: [Tracking]
+    tracking: [Tracking] @relation(from: "bid", to: "user", name: "TRACKING")
     finalized: Boolean
 }
 
 type Tracking{
     id: ID!
-    tracker: User
+    tracker: User @relation(from: "bid", to: "user", name: "TRACKED_BY")
     ttime: String
     tlog: String
 }

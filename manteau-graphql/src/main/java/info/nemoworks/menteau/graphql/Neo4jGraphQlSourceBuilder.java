@@ -36,6 +36,7 @@ public class Neo4jGraphQlSourceBuilder implements GraphQlSourceBuilderCustomizer
         this.dataFetchingInterceptor = dataFetchingInterceptor;
     }
 
+
     @Override
     public void customize(GraphQlSource.SchemaResourceBuilder builder) {
         builder.configureRuntimeWiring(runtimeWiringBuilder -> {

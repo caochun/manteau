@@ -30,7 +30,7 @@ public class Neo4jGraphQlSourceBuilder implements GraphQlSourceBuilderCustomizer
         this.schemaBuilder = new SchemaBuilder(neo4jTypeDefinitionRegistry, new SchemaConfig(
                 new SchemaConfig.CRUDConfig(),
                 new SchemaConfig.CRUDConfig(true, List.of()),
-                false, true, SchemaConfig.InputStyle.INPUT_TYPE, true, false));
+                false, true, SchemaConfig.InputStyle.INPUT_TYPE, true, true));
         this.schemaBuilder.augmentTypes();
 
         this.dataFetchingInterceptor = dataFetchingInterceptor;

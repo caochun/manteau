@@ -14,11 +14,11 @@ public class Task {
     }
 
     private String subject;
-    private Query query;
+    private CommandQuery query;
 
-    private List<Command> expectedCommands = null;
+    private List<CommandQuery> expectedCommands = null;
 
-    private Command completingCommand = null;
+    private CommandQuery completingCommand = null;
 
     private AbstractProcess process;
 
@@ -31,7 +31,7 @@ public class Task {
         return true;
     }
 
-    public boolean complete(Command command) {
+    public boolean complete(CommandQuery command) {
         if (!this.expectedCommands.contains(command)) return false;
         this.status = STATUS.COMPLETED;
         this.completingCommand = command;

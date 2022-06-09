@@ -27,7 +27,6 @@ public abstract class AbstractProcess {
     private Log log;
 
 
-
     public AbstractProcess(URL scxmlDocument) throws ModelException {
         this(scxmlDocument, new JexlContext(), new JexlEvaluator());
     }
@@ -124,8 +123,12 @@ public abstract class AbstractProcess {
     }
 
     public boolean taskStatusChanged(Task task) {
+
+        if (pendingTask != task) {
+            return false;
+        }
         if (pendingTask.getStatus() == Task.STATUS.COMPLETED) {
-            return this.fireEvent(pendingTask.getCompletingCommand().getCommandString());
+            return this.fireEvent(pendingTask.getCompletingCommand().getId());
         }
         return false;
     }

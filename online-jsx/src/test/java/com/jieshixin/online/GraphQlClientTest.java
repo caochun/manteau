@@ -1,5 +1,10 @@
 package com.jieshixin.online;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.ImmutableMap;
+import com.google.gson.Gson;
+import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
 import org.springframework.graphql.client.ClientGraphQlRequest;
 import org.springframework.graphql.client.ClientGraphQlResponse;
@@ -13,12 +18,14 @@ import reactor.core.publisher.Mono;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class GraphQlClientTest {
-    static String createUser1 = "mutation{createUser(id:\"user1\", name: \"Alice\"){ name } }";
-    static String queryUsers= "query{ users{ id name } }";
+    static String createUser1 = "mutation createUser($id: ID, $name: String){createUser(id:$id, name:$name){ name } }";
+    static String queryUsers = "query{ users{ id name } }";
+
     @Test
-    public void testHttpClient_Mutation(){
+    public void testHttpClient_Mutation() {
         WebClient webClient = WebClient.builder().baseUrl("http://localhost:8080/graphql").build();
         webClient.post();
         HttpGraphQlClient graphQlClient = HttpGraphQlClient.builder(webClient)
@@ -26,27 +33,33 @@ public class GraphQlClientTest {
                 .interceptor(new MyInterceptor())
                 .build();
 
-        List<Object> elements = new ArrayList<>();
 
-        Mono<String> mono = graphQlClient.document(queryUsers).execute().map(r ->r.getData().toString());
+        ImmutableMap<String, Object> vars = ImmutableMap.of("id", "u1","name", "jason");
+        Mono<JSONObject> mono = graphQlClient.document(createUser1).variables(vars).execute().map(r -> {
+            Gson gson = new Gson();
 
-        mono.subscribe(e -> System.out.println(e));
+            return new JSONObject(r.<Map>getData());
+        });
 
-        System.out.println(elements.size());
+        mono.subscribe(e -> {
+            System.out.println(e);
+
+        });
+
+        mono.block();
+
     }
 
     static class MyInterceptor implements GraphQlClientInterceptor {
 
         @Override
         public Mono<ClientGraphQlResponse> intercept(ClientGraphQlRequest request, Chain chain) {
-            // ...
-            System.out.println("req");
+
             return chain.next(request);
         }
 
         @Override
         public Flux<ClientGraphQlResponse> interceptSubscription(ClientGraphQlRequest request, SubscriptionChain chain) {
-            // ...
             return chain.next(request);
         }
 

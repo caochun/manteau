@@ -29,5 +29,4 @@ public class Neo4jGraphQLConfig {
         return new Neo4jExecutor(graphDatabaseService);
     }
 
-
 }

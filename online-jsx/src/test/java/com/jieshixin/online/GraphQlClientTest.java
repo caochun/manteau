@@ -3,7 +3,6 @@ package com.jieshixin.online;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ImmutableMap;
-import com.google.gson.Gson;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
 import org.springframework.graphql.client.ClientGraphQlRequest;
@@ -36,7 +35,6 @@ public class GraphQlClientTest {
 
         ImmutableMap<String, Object> vars = ImmutableMap.of("id", "u1","name", "jason");
         Mono<JSONObject> mono = graphQlClient.document(createUser1).variables(vars).execute().map(r -> {
-            Gson gson = new Gson();
 
             return new JSONObject(r.<Map>getData());
         });

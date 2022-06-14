@@ -19,10 +19,9 @@
         <java.version>11</java.version>
     </properties>
     <modules>
-        <module>manteau-graphql</module>
         <module>neo4j-graphql-java-core</module>
-        <module>manteau-flow</module>
-        <module>online-jsx</module>
+        <module>manteau-core</module>
+        <module>manteau-jsxonline</module>
     </modules>
 
     <dependencies>

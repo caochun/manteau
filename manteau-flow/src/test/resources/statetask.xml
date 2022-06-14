@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<scxml xmlns="http://www.w3.org/2005/07/scxml"
+       xmlns:manteau="https://nemoworks.info/manteau"
+       version="1.0"
+       datamodel="jexl"
+       initial="custom">
+
+    <state id="custom">
+
+        <onentry>
+            <manteau:task name="abc">
+            </manteau:task>
+        </onentry>
+        <transition event="helloevent" target="dest"></transition>
+    </state>
+
+    <final id="dest">
+        <onentry>
+            <log expr="'hello world'"/>
+        </onentry>
+    </final>
+
+
+</scxml>
+

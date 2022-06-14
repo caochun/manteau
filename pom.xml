@@ -22,6 +22,7 @@
         <module>neo4j-graphql-java-core</module>
         <module>manteau-core</module>
         <module>manteau-jsxonline</module>
+        <module>manteau-flow</module>
     </modules>
 
     <dependencies>

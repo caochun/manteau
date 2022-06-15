@@ -23,34 +23,26 @@ public class StateTask extends Action {
 
     public StateTask() {
         log = LogFactory.getLog(this.getClass());
-        log.info("task creating " + this.hashCode());
-
     }
-
 
     private ActionExecutionContext executionContext;
 
     @Override
     public void execute(ActionExecutionContext actionExecutionContext) throws ModelException, SCXMLExpressionException {
-
-        log.info("task executing " + this.hashCode());
-
+        log.info("task " + this.getName() + " executing");
         this.executionContext = actionExecutionContext;
+        TaskTrace.INSTANCE().appendTask(this);
         complete();
-
     }
 
-
-
-
-    public void complete(){
+    public void complete() {
         TriggerEvent event = new TriggerEvent(this.getCompleteEvent(), TriggerEvent.SIGNAL_EVENT, this.getCompleteEvent());
         this.executionContext.getInternalIOProcessor().addEvent(event);
-        log.info(((SCXMLExecutionContext) (this.executionContext.getInternalIOProcessor())).hasPendingInternalEvent());
-        log.info("task " + this.hashCode() +" completed");
+        log.info("task " + this.getName() + " completed");
+        log.info(TaskTrace.INSTANCE().toString());
     }
 
-    public void accept(){
+    public void accept() {
 
     }
 }

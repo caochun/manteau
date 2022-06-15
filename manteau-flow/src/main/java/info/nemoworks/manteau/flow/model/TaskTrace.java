@@ -1,39 +1,53 @@
 package info.nemoworks.manteau.flow.model;
 
-import java.util.HashMap;
+import com.google.common.graph.GraphBuilder;
+import com.google.common.graph.MutableGraph;
+
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 public class TaskTrace {
 
-    private static TaskTrace bulletin;
+    private StateTask head = null;
 
-    private Map<String, TaskHandle> delegates;
+    private MutableGraph<StateTask> graph;
+
+    private static TaskTrace taskTrace;
 
     private TaskTrace() {
-        this.delegates = new HashMap<>();
+        this.graph = GraphBuilder.directed().build();
+
     }
 
     public static TaskTrace INSTANCE() {
-        if (bulletin == null)
-            bulletin = new TaskTrace();
-        return bulletin;
+        if (taskTrace == null)
+            taskTrace = new TaskTrace();
+        return taskTrace;
     }
 
-    public void addDelegate(TaskHandle delegate) {
-        this.delegates.put(delegate.getName(), delegate);
+    public void appendTask(StateTask task) {
+        this.appendTask(null, task);
     }
 
-    public TaskHandle getDelegate(String name) {
-        return this.delegates.get(name);
+    public void appendTask(StateTask predecessor, StateTask task) {
+        this.graph.addNode(task);
+        if (predecessor != null) {
+            this.graph.putEdge(predecessor, task);
+        } else {
+            if (head != null) {
+                this.graph.putEdge(head, task);
+            }
+            this.head = task;
+        }
     }
 
-    public void deleteDelegate(String name) {
-        this.delegates.remove(name);
+    public List<StateTask> getTask(String name) {
+        return this.graph.nodes().stream().filter(n -> n.getName().equals(name)).collect(Collectors.toList());
     }
 
-    public List<TaskHandle> getDelegates() {
-        return this.delegates.values().stream().collect(Collectors.toList());
+    @Override
+    public String toString(){
+        return this.graph.toString();
     }
+
 }

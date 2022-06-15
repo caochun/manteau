@@ -13,6 +13,6 @@ public class TaskHandle {
     public TaskHandle(StateTask stateTask, String name) {
         this.stateTask = stateTask;
         this.name = name;
-        TaskTrace.INSTANCE().addDelegate(this);
+//        TaskTrace.INSTANCE().addDelegate(this);
     }
 }

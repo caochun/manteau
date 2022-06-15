@@ -37,6 +37,7 @@ public class Task extends Action {
         log.info("task " + this.name);
 
         this.executionContext = actionExecutionContext;
+        complete();
 
     }
 
@@ -44,7 +45,7 @@ public class Task extends Action {
 
 
     public void complete(){
-        TriggerEvent event = new TriggerEvent(this.getCompleteEvent(), TriggerEvent.SIGNAL_EVENT, this.getName());
+        TriggerEvent event = new TriggerEvent(this.getCompleteEvent(), TriggerEvent.SIGNAL_EVENT, this.getCompleteEvent());
         this.executionContext.getInternalIOProcessor().addEvent(event);
         log.info("task " + this.getName() +"completed");
     }

@@ -5,6 +5,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.commons.scxml2.Context;
 import org.apache.commons.scxml2.Evaluator;
 import org.apache.commons.scxml2.SCXMLExecutor;
+import org.apache.commons.scxml2.SCXMLSemantics;
 import org.apache.commons.scxml2.env.SimpleDispatcher;
 import org.apache.commons.scxml2.env.SimpleErrorReporter;
 import org.apache.commons.scxml2.env.jexl.JexlContext;
@@ -49,7 +50,9 @@ public class Flow {
     }
 
     private void initialize(final SCXML stateMachine, final Context rootCtx, final Evaluator evaluator) throws ModelException {
-        engine = new SCXMLExecutor(evaluator, new SimpleDispatcher(), new SimpleErrorReporter());
+
+        SCXMLSemantics semantics = new SCXMLSemanticsWithGoto();
+        engine = new SCXMLExecutor(evaluator, new SimpleDispatcher(), new SimpleErrorReporter(), semantics);
         engine.setStateMachine(stateMachine);
         engine.setRootContext(rootCtx);
         try {

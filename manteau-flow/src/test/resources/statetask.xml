@@ -8,7 +8,7 @@
     <state id="custom">
 
         <onentry>
-            <manteau:task name="abc">
+            <manteau:task name="abc" completeEvent="helloevent">
             </manteau:task>
         </onentry>
         <transition event="helloevent" target="dest"></transition>
@@ -16,7 +16,8 @@
 
     <final id="dest">
         <onentry>
-            <log expr="'hello world'"/>
+            <manteau:task name="goto" completeEvent="GOTO_custom">
+            </manteau:task>
         </onentry>
     </final>
 

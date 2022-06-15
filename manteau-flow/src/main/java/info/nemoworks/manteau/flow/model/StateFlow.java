@@ -1,6 +1,6 @@
 package info.nemoworks.manteau.flow.model;
 
-import info.nemoworks.manteau.flow.scxml.SCXMLSemanticsWithGoto;
+import info.nemoworks.manteau.flow.scxml.SCXMLGotoSemanticsImpl;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.commons.scxml2.Context;
@@ -52,7 +52,7 @@ public class StateFlow {
 
     private void initialize(final SCXML stateMachine, final Context rootCtx, final Evaluator evaluator) throws ModelException {
 
-        SCXMLSemantics semantics = new SCXMLSemanticsWithGoto();
+        SCXMLSemantics semantics = new SCXMLGotoSemanticsImpl();
         engine = new SCXMLExecutor(evaluator, new SimpleDispatcher(), new SimpleErrorReporter(), semantics);
         engine.setStateMachine(stateMachine);
         engine.setRootContext(rootCtx);

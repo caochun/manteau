@@ -37,7 +37,7 @@ public class Task extends Action {
         log.info("task " + this.name);
 
         this.executionContext = actionExecutionContext;
-        complete();
+//        complete();
 
     }
 

@@ -14,10 +14,16 @@
         <transition event="helloevent" target="dest"></transition>
     </state>
 
-    <final id="dest">
+    <state id="dest">
         <onentry>
             <manteau:task name="goto" completeEvent="GOTO_custom">
             </manteau:task>
+        </onentry>
+        <transition event="helloevent" target="last"></transition>
+    </state>
+    <final id="last">
+        <onentry>
+            <log expr="'last'"></log>
         </onentry>
     </final>
 

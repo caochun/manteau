@@ -8,7 +8,7 @@ import org.apache.commons.scxml2.*;
 import org.apache.commons.scxml2.model.Action;
 import org.apache.commons.scxml2.model.ModelException;
 
-public class Task extends Action {
+public class StateTask extends Action {
 
     Log log;
 
@@ -16,13 +16,12 @@ public class Task extends Action {
     @Setter
     private String name;
 
-
     @Getter
     @Setter
     private String completeEvent;
 
 
-    public Task() {
+    public StateTask() {
         log = LogFactory.getLog(this.getClass());
         log.info("task creating " + this.hashCode());
 

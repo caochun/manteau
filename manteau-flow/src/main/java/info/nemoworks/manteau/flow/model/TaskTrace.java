@@ -5,27 +5,27 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class TaskBulletin {
+public class TaskTrace {
 
-    private static TaskBulletin bulletin;
+    private static TaskTrace bulletin;
 
-    private Map<String, TaskDelegate> delegates;
+    private Map<String, TaskHandle> delegates;
 
-    private TaskBulletin() {
+    private TaskTrace() {
         this.delegates = new HashMap<>();
     }
 
-    public static TaskBulletin INSTANCE() {
+    public static TaskTrace INSTANCE() {
         if (bulletin == null)
-            bulletin = new TaskBulletin();
+            bulletin = new TaskTrace();
         return bulletin;
     }
 
-    public void addDelegate(TaskDelegate delegate) {
+    public void addDelegate(TaskHandle delegate) {
         this.delegates.put(delegate.getName(), delegate);
     }
 
-    public TaskDelegate getDelegate(String name) {
+    public TaskHandle getDelegate(String name) {
         return this.delegates.get(name);
     }
 
@@ -33,7 +33,7 @@ public class TaskBulletin {
         this.delegates.remove(name);
     }
 
-    public List<TaskDelegate> getDelegates() {
+    public List<TaskHandle> getDelegates() {
         return this.delegates.values().stream().collect(Collectors.toList());
     }
 }

@@ -1,4 +1,4 @@
-package info.nemoworks.manteau.flow.model;
+package info.nemoworks.manteau.flow.scxml;
 
 import org.apache.commons.scxml2.SCXMLExecutionContext;
 import org.apache.commons.scxml2.TriggerEvent;

@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <scxml xmlns="http://www.w3.org/2005/07/scxml"
-       xmlns:manteau="https://nemoworks.info/manteau"
+       xmlns:manteau="https://nemoworks.info/"
        version="1.0"
        datamodel="jexl"
        initial="custom">
@@ -8,16 +8,16 @@
     <state id="custom">
 
         <onentry>
-            <manteau:task name="abc" completeEvent="GOTO_last">
-            </manteau:task>
+            <manteau:stateTask name="abc" completeEvent="GOTO_last">
+            </manteau:stateTask>
         </onentry>
         <transition event="helloevent" target="dest"></transition>
     </state>
 
     <state id="dest">
         <onentry>
-            <manteau:task name="goto" completeEvent="GOTO_custom">
-            </manteau:task>
+            <manteau:stateTask name="goto" completeEvent="GOTO_custom">
+            </manteau:stateTask>
         </onentry>
         <transition event="ed" target="last"></transition>
     </state>

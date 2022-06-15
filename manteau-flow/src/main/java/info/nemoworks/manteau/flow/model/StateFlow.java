@@ -1,5 +1,6 @@
 package info.nemoworks.manteau.flow.model;
 
+import info.nemoworks.manteau.flow.scxml.SCXMLSemanticsWithGoto;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.commons.scxml2.Context;
@@ -21,7 +22,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Flow {
+public class StateFlow {
 
     private Log log;
 
@@ -30,15 +31,15 @@ public class Flow {
     private SCXMLExecutor engine;
 
 
-    public Flow(final URL scxmlDocument) throws ModelException {
+    public StateFlow(final URL scxmlDocument) throws ModelException {
         this(scxmlDocument, new JexlContext(), new JexlEvaluator());
     }
 
-    public Flow(URL scxmlDocument, Context rootCtx, Evaluator evaluator) throws ModelException {
+    public StateFlow(URL scxmlDocument, Context rootCtx, Evaluator evaluator) throws ModelException {
         log = LogFactory.getLog(this.getClass());
 
         List<CustomAction> customActions = new ArrayList<CustomAction>();
-        CustomAction ca = new CustomAction("https://nemoworks.info/manteau", "task", Task.class);
+        CustomAction ca = new CustomAction("https://nemoworks.info/", "task", StateTask.class);
         customActions.add(ca);
 
         try {

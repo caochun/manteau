@@ -8,6 +8,7 @@ import org.apache.commons.scxml2.semantics.Step;
 
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 public class SCXMLSemanticsWithGoto extends SCXMLSemanticsImpl {
 
@@ -66,4 +67,45 @@ public class SCXMLSemanticsWithGoto extends SCXMLSemanticsImpl {
         Object payload = event.getPayload();
         return ((payload instanceof String) && (((String) payload).startsWith("GOTO_")));
     }
+
+    @Override
+    public void macroStep(SCXMLExecutionContext exctx, Set<TransitionalState> statesToInvoke) throws ModelException {
+        do {
+            boolean macroStepDone = false;
+            do {
+                Step step = new Step(null);
+                selectTransitions(exctx, step);
+                if (step.getTransitList().isEmpty()) {
+                    TriggerEvent event = exctx.nextInternalEvent();
+                    if (event != null) {
+                        if (isCancelEvent(event)) {
+                            exctx.stopRunning();
+                        }
+                        else {
+                            setSystemEventVariable(exctx.getScInstance(), event, true);
+                            step = new Step(event);
+                            if (isGotoEvent(event)){
+                                buildTemporaryTransition(exctx,event,step);
+                            }else{
+                                selectTransitions(exctx, step);
+
+                            }
+                        }
+                    }
+                }
+                if (step.getTransitList().isEmpty()) {
+                    macroStepDone = true;
+                }
+                else {
+                    microStep(exctx, step, statesToInvoke);
+                    setSystemAllStatesVariable(exctx.getScInstance());
+                }
+
+            } while (exctx.isRunning() && !macroStepDone);
+
+            if (exctx.isRunning() && !statesToInvoke.isEmpty()) {
+                initiateInvokes(exctx, statesToInvoke);
+                statesToInvoke.clear();
+            }
+        } while (exctx.isRunning() && exctx.hasPendingInternalEvent());    }
 }

@@ -4,9 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.commons.scxml2.ActionExecutionContext;
-import org.apache.commons.scxml2.SCXMLExpressionException;
-import org.apache.commons.scxml2.TriggerEvent;
+import org.apache.commons.scxml2.*;
 import org.apache.commons.scxml2.model.Action;
 import org.apache.commons.scxml2.model.ModelException;
 
@@ -26,6 +24,8 @@ public class Task extends Action {
 
     public Task() {
         log = LogFactory.getLog(this.getClass());
+        log.info("task creating " + this.hashCode());
+
     }
 
 
@@ -34,7 +34,7 @@ public class Task extends Action {
     @Override
     public void execute(ActionExecutionContext actionExecutionContext) throws ModelException, SCXMLExpressionException {
 
-        log.info("task " + this.name);
+        log.info("task executing " + this.hashCode());
 
         this.executionContext = actionExecutionContext;
         complete();
@@ -47,7 +47,8 @@ public class Task extends Action {
     public void complete(){
         TriggerEvent event = new TriggerEvent(this.getCompleteEvent(), TriggerEvent.SIGNAL_EVENT, this.getCompleteEvent());
         this.executionContext.getInternalIOProcessor().addEvent(event);
-        log.info("task " + this.getName() +" completed");
+        log.info(((SCXMLExecutionContext) (this.executionContext.getInternalIOProcessor())).hasPendingInternalEvent());
+        log.info("task " + this.hashCode() +" completed");
     }
 
     public void accept(){

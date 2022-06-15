@@ -19,7 +19,7 @@
             <manteau:task name="goto" completeEvent="GOTO_custom">
             </manteau:task>
         </onentry>
-        <transition event="helloevent" target="last"></transition>
+        <transition event="ed" target="last"></transition>
     </state>
     <final id="last">
         <onentry>

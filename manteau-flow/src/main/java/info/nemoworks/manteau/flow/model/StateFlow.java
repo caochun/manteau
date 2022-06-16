@@ -16,8 +16,10 @@ import org.apache.commons.scxml2.model.*;
 import javax.xml.stream.XMLStreamException;
 import java.io.IOException;
 import java.net.URL;
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class StateFlow {
 
@@ -81,11 +83,16 @@ public class StateFlow {
 
     protected class EntryListener implements SCXMLListener {
 
+        UUID last, current;
+
         /**
          * {@inheritDoc}
          */
         public void onEntry(final EnterableState entered) {
-            // nothing to do
+            if (current == null) {
+                current = UUID.randomUUID();
+                StateFlow.this.graph.addNode(new AbstractMap.SimpleEntry<>(current.toString(), entered.getObservableId()));
+            }
         }
 
         /**
@@ -98,12 +105,10 @@ public class StateFlow {
          */
         public void onTransition(final TransitionTarget from,
                                  final TransitionTarget to, final Transition transition, final String event) {
-            if (from == null){
-                StateFlow.this.graph.addNode(Integer.valueOf(to.getObservableId()));
-            }else{
-                StateFlow.this.graph.putEdge(Integer.valueOf(from.getObservableId()), Integer.valueOf(to.getObservableId()));
-            }
-            System.out.println(graph.toString());
+            //TODO: possible bugs here if parallel state
+            last = current;
+            current = UUID.randomUUID();
+            StateFlow.this.graph.putEdge(new AbstractMap.SimpleEntry<>(last.toString(), from.getObservableId()), new AbstractMap.SimpleEntry<>(current.toString(), to.getObservableId()));
         }
 
         /**
@@ -117,10 +122,14 @@ public class StateFlow {
 
     }
 
-    private MutableGraph<Integer> graph= GraphBuilder.directed().build();
+    private MutableGraph<AbstractMap.SimpleEntry<String, Integer>> graph = GraphBuilder.directed().build();
 
-    public String getTrace(){
+    public String getTrace() {
         return graph.toString();
+    }
+
+    public static class TraceVertex {
+
     }
 
 

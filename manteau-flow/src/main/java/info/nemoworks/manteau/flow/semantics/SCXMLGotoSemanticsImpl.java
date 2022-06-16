@@ -55,6 +55,7 @@ public class SCXMLGotoSemanticsImpl extends SCXMLSemanticsImpl {
         transition.getTargets().add(targets.get(nextId));
         transition.setNamespaces(executionContext.getScInstance().getStateMachine().getNamespaces());
         transition.setType(TransitionType.external);
+        transition.setParent((TransitionalState) executionContext.getScInstance().getCurrentStatus().getAllStates().iterator().next());
 
         step.getTransitList().add(transition);
 

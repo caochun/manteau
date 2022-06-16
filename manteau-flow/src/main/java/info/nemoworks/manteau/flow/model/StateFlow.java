@@ -2,7 +2,7 @@ package info.nemoworks.manteau.flow.model;
 
 import com.google.common.graph.GraphBuilder;
 import com.google.common.graph.MutableGraph;
-import info.nemoworks.manteau.flow.scxml.SCXMLGotoSemanticsImpl;
+import info.nemoworks.manteau.flow.semantics.SCXMLGotoSemanticsImpl;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.commons.scxml2.*;
@@ -26,6 +26,8 @@ public class StateFlow {
     private SCXML stateMachine;
 
     private SCXMLExecutor engine;
+
+    private SCXMLExecutionContext executionContext;
 
 
     public StateFlow(final URL scxmlDocument) throws ModelException {

@@ -1,20 +1,17 @@
 package info.nemoworks.manteau.flow.model;
 
+import com.google.common.graph.GraphBuilder;
+import com.google.common.graph.MutableGraph;
 import info.nemoworks.manteau.flow.scxml.SCXMLGotoSemanticsImpl;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.commons.scxml2.Context;
-import org.apache.commons.scxml2.Evaluator;
-import org.apache.commons.scxml2.SCXMLExecutor;
-import org.apache.commons.scxml2.SCXMLSemantics;
+import org.apache.commons.scxml2.*;
 import org.apache.commons.scxml2.env.SimpleDispatcher;
 import org.apache.commons.scxml2.env.SimpleErrorReporter;
 import org.apache.commons.scxml2.env.jexl.JexlContext;
 import org.apache.commons.scxml2.env.jexl.JexlEvaluator;
 import org.apache.commons.scxml2.io.SCXMLReader;
-import org.apache.commons.scxml2.model.CustomAction;
-import org.apache.commons.scxml2.model.ModelException;
-import org.apache.commons.scxml2.model.SCXML;
+import org.apache.commons.scxml2.model.*;
 
 import javax.xml.stream.XMLStreamException;
 import java.io.IOException;
@@ -56,6 +53,7 @@ public class StateFlow {
         engine = new SCXMLExecutor(evaluator, new SimpleDispatcher(), new SimpleErrorReporter(), semantics);
         engine.setStateMachine(stateMachine);
         engine.setRootContext(rootCtx);
+        engine.addListener(stateMachine, new EntryListener());
         try {
             engine.go();
         } catch (final ModelException me) {
@@ -78,5 +76,50 @@ public class StateFlow {
             log.error(exception.getMessage(), exception);
         }
     }
+
+    protected class EntryListener implements SCXMLListener {
+
+        /**
+         * {@inheritDoc}
+         */
+        public void onEntry(final EnterableState entered) {
+            // nothing to do
+        }
+
+        /**
+         * No-op.
+         *
+         * @param from       The &quot;source&quot; transition target.
+         * @param to         The &quot;destination&quot; transition target.
+         * @param transition The transition being followed.
+         * @param event      The event triggering the transition
+         */
+        public void onTransition(final TransitionTarget from,
+                                 final TransitionTarget to, final Transition transition, final String event) {
+            if (from == null){
+                StateFlow.this.graph.addNode(Integer.valueOf(to.getObservableId()));
+            }else{
+                StateFlow.this.graph.putEdge(Integer.valueOf(from.getObservableId()), Integer.valueOf(to.getObservableId()));
+            }
+            System.out.println(graph.toString());
+        }
+
+        /**
+         * No-op.
+         *
+         * @param exited The state being exited.
+         */
+        public void onExit(final EnterableState exited) {
+            // nothing to do
+        }
+
+    }
+
+    private MutableGraph<Integer> graph= GraphBuilder.directed().build();
+
+    public String getTrace(){
+        return graph.toString();
+    }
+
 
 }

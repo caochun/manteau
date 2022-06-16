@@ -31,7 +31,6 @@ public class StateTask extends Action {
     public void execute(ActionExecutionContext actionExecutionContext) throws ModelException, SCXMLExpressionException {
         log.info("task " + this.getName() + " executing");
         this.executionContext = actionExecutionContext;
-        TaskTrace.INSTANCE().appendTask(this);
         complete();
     }
 
@@ -39,7 +38,6 @@ public class StateTask extends Action {
         TriggerEvent event = new TriggerEvent(this.getCompleteEvent(), TriggerEvent.SIGNAL_EVENT, this.getCompleteEvent());
         this.executionContext.getInternalIOProcessor().addEvent(event);
         log.info("task " + this.getName() + " completed");
-        log.info(TaskTrace.INSTANCE().toString());
     }
 
     public void accept() {

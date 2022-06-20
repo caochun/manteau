@@ -12,7 +12,6 @@ public class StateFlowTests {
     @Test
     public void testFlowWithCustomAction() throws ModelException, IOException {
         StateFlow stateFlow = new StateFlow(Resources.getResource("statetask.xml"));
-        System.out.println(stateFlow.getTrace());
     }
 
 }

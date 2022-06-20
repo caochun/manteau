@@ -5,13 +5,13 @@ import lombok.Getter;
 public class TaskHandle {
 
     @Getter
-    private StateTask stateTask;
+    private Task task;
 
     @Getter
     private String name;
 
-    public TaskHandle(StateTask stateTask, String name) {
-        this.stateTask = stateTask;
+    public TaskHandle(Task task, String name) {
+        this.task = task;
         this.name = name;
 //        TaskTrace.INSTANCE().addDelegate(this);
     }

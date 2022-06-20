@@ -5,28 +5,40 @@
        datamodel="jexl"
        initial="custom">
 
-    <state id="custom">
-
+    <state id="init">
         <onentry>
-            <flow:task name="abc" completeEvent="helloevent">
-            </flow:task>
+            <flow:task name="inputTitle" completeEvent="create"/>
         </onentry>
-        <transition event="helloevent" target="dest"></transition>
+        <transition event="create" target="editing"/>
     </state>
-
-    <state id="dest">
+    <state id="editing">
         <onentry>
-            <flow:task name="goto" completeEvent="GOTO_custom">
-            </flow:task>
+            <flow:task name="editContent" completeEvent="submit"/>
         </onentry>
-        <transition event="ed" target="last"></transition>
+        <transition event="submit" target="reviewing"/>
+        <transition event="save" target="editing"/>
     </state>
-    <final id="last">
+    <state id="reviewing">
+        <onentry>
+            <flow:task name="reviewBid" completeEvent="approve"/>
+        </onentry>
+
+        <transition event="approve" target="tracking"/>
+        <transition event="disapprove" target="editing"/>
+    </state>
+    <state id="tracking">
+        <onentry>
+            <flow:task name="keepTracking" completeEvent="finalize"/>
+        </onentry>
+
+        <transition event="finalize" target="closed"/>
+        <transition event="track" target="tracking"/>
+    </state>
+    <final id="closed">
         <onentry>
             <log expr="'last'"></log>
         </onentry>
     </final>
-
 
 </scxml>
 

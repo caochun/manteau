@@ -1,6 +1,7 @@
 package info.nemoworks.manteau.flow.model;
 
 import info.nemoworks.manteau.flow.semantics.SCXMLGotoSemanticsImpl;
+import lombok.Getter;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.commons.scxml2.Context;
@@ -28,6 +29,7 @@ public class Flow {
 
     private SCXML stateMachine;
 
+    @Getter
     private SCXMLExecutor engine;
 
     private Trace trace;
@@ -42,6 +44,8 @@ public class Flow {
         trace = new Trace();
 
         rootCtx.set("trace", trace);
+        rootCtx.set("flow", this);
+
 
         List<CustomAction> customActions = new ArrayList<CustomAction>();
         CustomAction ca = new CustomAction("https://nemoworks.info/", "task", Task.class);
@@ -82,6 +86,10 @@ public class Flow {
         if (log.isErrorEnabled()) {
             log.error(exception.getMessage(), exception);
         }
+    }
+
+    public Trace getTrace(){
+        return this.trace;
     }
 
 }

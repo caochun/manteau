@@ -3,11 +3,14 @@ package info.nemoworks.manteau.flow.model;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.commons.scxml2.ActionExecutionContext;
 import org.apache.commons.scxml2.SCXMLExpressionException;
+import org.apache.commons.scxml2.SCXMLSystemContext;
 import org.apache.commons.scxml2.TriggerEvent;
 import org.apache.commons.scxml2.model.Action;
 import org.apache.commons.scxml2.model.ModelException;
+import org.apache.commons.scxml2.system.EventVariable;
 
 public class Task extends Action {
 
@@ -33,6 +36,7 @@ public class Task extends Action {
 
     //tasks will be initialized when the scxml reader build the machine up
     public Task() {
+        log = LogFactory.getLog(this.getClass());
         this.status = STATUS.INITIALIZED;
     }
 
@@ -53,9 +57,31 @@ public class Task extends Action {
             return false;
 
         this.status = STATUS.COMPLETED;
+
+        this.trigger(this.completeEvent, null);
         log.info("task " + this.getName() + " completed");
 
         return true;
+    }
+
+    public boolean uncomplete() {
+        if (trace.getHeadTask().getStatus() != STATUS.PENDING)
+            return false;
+
+        if (trace.getPre(trace.getHead()).getTask() != this)
+            return false;
+
+        if (trigger("GOTO_" + trace.getHead().getTask().getName(), null)) {
+            trace.append(this, Trace.ORIGIN.WITHDRAW);
+            this.status = STATUS.ACCEPTED;
+            log.info("task " + this.getName() + " uncompleted");
+            return true;
+        }
+
+        log.info("task " + this.getName() + " fail to uncomplete");
+
+        return false;
+
     }
 
     public boolean accept() {
@@ -68,7 +94,7 @@ public class Task extends Action {
         return true;
     }
 
-    public boolean invoke() {
+    public boolean invoke(ActionExecutionContext actionExecutionContext) {
 
         if ((this.status != STATUS.INITIALIZED) && (this.status != STATUS.COMPLETED))
             return false;
@@ -88,12 +114,14 @@ public class Task extends Action {
 
     private Trace trace = null;
 
+    private Flow flow = null;
+
     @Override
     public void execute(ActionExecutionContext actionExecutionContext) throws ModelException, SCXMLExpressionException {
-        log.info("task " + this.getName() + " executing");
+
+        this.executionContext = actionExecutionContext;
 
         if (trace == null) {
-            this.executionContext = actionExecutionContext;
             Object t = actionExecutionContext.getGlobalContext().get("trace");
             if ((t == null) || (!(t instanceof Trace))) {
                 throw new ModelException("no trace in executionContext");
@@ -101,35 +129,35 @@ public class Task extends Action {
             this.trace = (Trace) t;
         }
 
-        this.invoke();
-
-    }
-
-
-    // return true if 'head' is pending and is the direct predecessor of 'to'
-    public synchronized boolean unwindTask(Task to) throws ModelException {
-
-
-        head.getTask().revoke();
-        this.trigger(head.getTask(), "GOTO_" + to.getParentEnterableState().getId(), null);
-
-        Trace.Node current = new Trace.Node(to, Trace.ORIGIN.WITHDRAW);
-        trace.putEdge(head, current);
-        head = current;
-        return true;
-
-    }
-
-
-    private void trigger(Task task, String event, Object payload) {
-        TriggerEvent evt = new TriggerEvent(event, TriggerEvent.SIGNAL_EVENT, payload);
-        task.getExecutionContext().getInternalIOProcessor().addEvent(evt);
-        log.info("Trigger event " + event + " for task " + task.getName());
-    }
-
-    public static class TaskStatusException extends Exception {
-        TaskStatusException(String message) {
-            super(message);
+        if (flow == null) {
+            Object t = actionExecutionContext.getGlobalContext().get("flow");
+            if ((t == null) || (!(t instanceof Flow))) {
+                throw new ModelException("no flow in executionContext");
+            }
+            this.flow = (Flow) t;
         }
+
+        EventVariable eventVariable = (EventVariable) actionExecutionContext.getGlobalContext().get(SCXMLSystemContext.EVENT_KEY);
+
+        if (eventVariable != null)
+            log.info("task " + this.getName() + " executing, triggered by event " + eventVariable.getName());
+
+        this.invoke(actionExecutionContext);
+
     }
+
+
+    public boolean trigger(String event, Object payload) {
+
+
+        TriggerEvent evt = new TriggerEvent(event, TriggerEvent.SIGNAL_EVENT, payload);
+        try {
+            flow.getEngine().triggerEvent(evt);
+        } catch (ModelException e) {
+            return false;
+        }
+        log.info("Trigger event " + event + " for task " + this.getName());
+        return true;
+    }
+
 }

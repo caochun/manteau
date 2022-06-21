@@ -22,7 +22,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-public class StateFlow {
+public class Flow {
 
     private Log log;
 
@@ -30,18 +30,18 @@ public class StateFlow {
 
     private SCXMLExecutor engine;
 
-    private TaskTrace taskTrace;
+    private Trace trace;
 
-    public StateFlow(final URL scxmlDocument) throws ModelException {
+    public Flow(final URL scxmlDocument) throws ModelException {
         this(scxmlDocument, new JexlContext(), new JexlEvaluator());
     }
 
-    public StateFlow(URL scxmlDocument, Context rootCtx, Evaluator evaluator) throws ModelException {
+    public Flow(URL scxmlDocument, Context rootCtx, Evaluator evaluator) throws ModelException {
         log = LogFactory.getLog(this.getClass());
 
-        taskTrace = new TaskTrace();
+        trace = new Trace();
 
-        rootCtx.set("trace", taskTrace);
+        rootCtx.set("trace", trace);
 
         List<CustomAction> customActions = new ArrayList<CustomAction>();
         CustomAction ca = new CustomAction("https://nemoworks.info/", "task", Task.class);

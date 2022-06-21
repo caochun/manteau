@@ -11,8 +11,7 @@ import java.io.IOException;
 public class FlowTests {
 
     @Test
-    public void testFlowWithCustomAction() throws ModelException, IOException, InterruptedException {
-
+    public void testFlowWithCustomAction() throws ModelException {
         Flow flow = new Flow(Resources.getResource("statetask.xml"));
         Task createTask = flow.getTrace().getHeadTask();
         createTask.complete();
@@ -20,8 +19,7 @@ public class FlowTests {
         Task next = flow.getTrace().getHeadTask();
         createTask.uncomplete();
 
-        Thread.currentThread().join();
-
+        flow.getTrace().getHeadTask().jump(next);
     }
 
 }

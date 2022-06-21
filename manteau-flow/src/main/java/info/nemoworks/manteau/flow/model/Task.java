@@ -109,6 +109,23 @@ public class Task extends Action {
 
     }
 
+    public boolean jump(Task task){
+        if (this.trace.getLatest(task)==null)
+            return false;
+
+        if (trigger("GOTO_" + task.getName(), null)) {
+            trace.append(this, Trace.ORIGIN.GOTO);
+            this.status = STATUS.COMPLETED;
+            log.info("jump to task " + task.getName() + " from " + this.getName());
+            return true;
+        }
+
+        log.info("task " + this.getName() + " fail to jump");
+
+
+        return false;
+    }
+
     @Getter
     private ActionExecutionContext executionContext;
 

@@ -12,6 +12,8 @@ import org.apache.commons.scxml2.model.Action;
 import org.apache.commons.scxml2.model.ModelException;
 import org.apache.commons.scxml2.system.EventVariable;
 
+import java.util.UUID;
+
 public class Task extends Action {
 
     Log log;
@@ -31,6 +33,10 @@ public class Task extends Action {
 
     @Getter
     private STATUS status;
+
+    private String taskId;
+
+    private String predecessorId;
 
     // Every task has its own lifecycle
     // INITIALIZED (execute)-> <--(cancel) PENDING (accept)-> ACCEPTED (complete)-> COMPLETED (execute)--> PENDING...
@@ -63,7 +69,7 @@ public class Task extends Action {
 
         this.status = STATUS.COMPLETED;
 
-        this.trigger(this.completeEvent, null);
+        this.trigger(this.completeEvent);
         log.info("task " + this.getName() + " completed");
 
         return true;
@@ -76,7 +82,7 @@ public class Task extends Action {
         if (trace.getPre(trace.getHead()).getTask() != this)
             return false;
 
-        if (trigger("GOTO_" + this.getStateId(), null)) {
+        if (trigger("GOTO_" + this.getStateId())) {
             trace.append(this, Trace.ORIGIN.WITHDRAW);
             this.status = STATUS.ACCEPTED;
             log.info("task " + this.getName() + " uncompleted");
@@ -114,11 +120,11 @@ public class Task extends Action {
 
     }
 
-    public boolean jump(Task task){
-        if (this.trace.getLatest(task)==null)
+    public boolean jump(Task task) {
+        if (this.trace.getLatest(task) == null)
             return false;
 
-        if (trigger("GOTO_" + task.getName(), null)) {
+        if (trigger("GOTO_" + task.getName())) {
             trace.append(this, Trace.ORIGIN.GOTO);
             this.status = STATUS.COMPLETED;
             log.info("jump to task " + task.getName() + " from " + this.getName());
@@ -143,6 +149,10 @@ public class Task extends Action {
 
         this.executionContext = actionExecutionContext;
 
+        this.taskId = UUID.randomUUID().toString();
+
+        log.info("this :" + taskId);
+
         if (trace == null) {
             Object t = actionExecutionContext.getGlobalContext().get("trace");
             if ((t == null) || (!(t instanceof Trace))) {
@@ -150,6 +160,15 @@ public class Task extends Action {
             }
             this.trace = (Trace) t;
         }
+
+        Object e = actionExecutionContext.getGlobalContext().get(SCXMLSystemContext.EVENT_KEY);
+        if ((e != null) && (e instanceof TriggerEvent)) {
+            this.predecessorId = ((TriggerEvent) e).getPayload().toString();
+
+            log.info("this : " +taskId + ", predecessor :" + predecessorId);
+        }
+
+
 
         if (flow == null) {
             Object t = actionExecutionContext.getGlobalContext().get("flow");
@@ -169,10 +188,10 @@ public class Task extends Action {
     }
 
 
-    public boolean trigger(String event, Object payload) {
+    public boolean trigger(String event) {
 
 
-        TriggerEvent evt = new TriggerEvent(event, TriggerEvent.SIGNAL_EVENT, payload);
+        TriggerEvent evt = new TriggerEvent(event, TriggerEvent.SIGNAL_EVENT, this.taskId);
         try {
             flow.getEngine().triggerEvent(evt);
         } catch (ModelException e) {

@@ -15,7 +15,7 @@ public class FlowTests {
         Flow flow = new Flow(Resources.getResource("statetask.xml"));
         Task createTask = flow.getTrace().getHeadTask();
         createTask.complete();
-        createTask.trigger("create", null);
+        createTask.trigger("create");
         Task next = flow.getTrace().getHeadTask();
         createTask.uncomplete();
 

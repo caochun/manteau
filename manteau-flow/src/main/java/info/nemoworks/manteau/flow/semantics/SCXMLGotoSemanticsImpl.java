@@ -43,9 +43,9 @@ public class SCXMLGotoSemanticsImpl extends SCXMLSemanticsImpl {
 
     private void buildTemporaryTransition(SCXMLExecutionContext executionContext, TriggerEvent event, Step step) {
 
-        String payload = (String) (event.getPayload());
+        String eventName = event.getName();
 
-        String nextId = payload.split("GOTO_", 2)[1];
+        String nextId = eventName.split("GOTO_", 2)[1];
 
         Map<String, TransitionTarget> targets = executionContext.getScInstance().getStateMachine().getTargets();
 
@@ -66,48 +66,47 @@ public class SCXMLGotoSemanticsImpl extends SCXMLSemanticsImpl {
     //Currently we treat an event as a fallback event if it has a String payload with a prefix of "GOTO_"
     //followed by the id of target state
     private boolean isGotoEvent(TriggerEvent event) {
-        Object payload = event.getPayload();
-        return ((payload instanceof String) && (((String) payload).startsWith("GOTO_")));
+        return event.getName().startsWith("GOTO_");
     }
-
-    @Override
-    public void macroStep(SCXMLExecutionContext exctx, Set<TransitionalState> statesToInvoke) throws ModelException {
-        do {
-            boolean macroStepDone = false;
-            do {
-                Step step = new Step(null);
-                selectTransitions(exctx, step);
-                if (step.getTransitList().isEmpty()) {
-                    TriggerEvent event = exctx.nextInternalEvent();
-                    if (event != null) {
-                        if (isCancelEvent(event)) {
-                            exctx.stopRunning();
-                        }
-                        else {
-                            setSystemEventVariable(exctx.getScInstance(), event, true);
-                            step = new Step(event);
-                            if (isGotoEvent(event)){
-                                buildTemporaryTransition(exctx,event,step);
-                            }else{
-                                selectTransitions(exctx, step);
-
-                            }
-                        }
-                    }
-                }
-                if (step.getTransitList().isEmpty()) {
-                    macroStepDone = true;
-                }
-                else {
-                    microStep(exctx, step, statesToInvoke);
-                    setSystemAllStatesVariable(exctx.getScInstance());
-                }
-
-            } while (exctx.isRunning() && !macroStepDone);
-
-            if (exctx.isRunning() && !statesToInvoke.isEmpty()) {
-                initiateInvokes(exctx, statesToInvoke);
-                statesToInvoke.clear();
-            }
-        } while (exctx.isRunning() && exctx.hasPendingInternalEvent());    }
+//
+//    @Override
+//    public void macroStep(SCXMLExecutionContext exctx, Set<TransitionalState> statesToInvoke) throws ModelException {
+//        do {
+//            boolean macroStepDone = false;
+//            do {
+//                Step step = new Step(null);
+//                selectTransitions(exctx, step);
+//                if (step.getTransitList().isEmpty()) {
+//                    TriggerEvent event = exctx.nextInternalEvent();
+//                    if (event != null) {
+//                        if (isCancelEvent(event)) {
+//                            exctx.stopRunning();
+//                        }
+//                        else {
+//                            setSystemEventVariable(exctx.getScInstance(), event, true);
+//                            step = new Step(event);
+//                            if (isGotoEvent(event)){
+//                                buildTemporaryTransition(exctx,event,step);
+//                            }else{
+//                                selectTransitions(exctx, step);
+//
+//                            }
+//                        }
+//                    }
+//                }
+//                if (step.getTransitList().isEmpty()) {
+//                    macroStepDone = true;
+//                }
+//                else {
+//                    microStep(exctx, step, statesToInvoke);
+//                    setSystemAllStatesVariable(exctx.getScInstance());
+//                }
+//
+//            } while (exctx.isRunning() && !macroStepDone);
+//
+//            if (exctx.isRunning() && !statesToInvoke.isEmpty()) {
+//                initiateInvokes(exctx, statesToInvoke);
+//                statesToInvoke.clear();
+//            }
+//        } while (exctx.isRunning() && exctx.hasPendingInternalEvent());    }
 }

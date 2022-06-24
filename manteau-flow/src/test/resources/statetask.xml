@@ -7,20 +7,20 @@
 
     <state id="init">
         <onentry>
-            <flow:task name="inputTitle" completeEvent="create"/>
+            <flow:task name="inputTitle" completeEvent="create" stateId="init"/>
         </onentry>
         <transition event="create" target="editing"/>
     </state>
     <state id="editing">
         <onentry>
-            <flow:task name="editContent" completeEvent="submit"/>
+            <flow:task name="editContent" completeEvent="submit" stateId="editing"/>
         </onentry>
         <transition event="submit" target="reviewing"/>
         <transition event="save" target="editing"/>
     </state>
     <state id="reviewing">
         <onentry>
-            <flow:task name="reviewBid" completeEvent="approve"/>
+            <flow:task name="reviewBid" completeEvent="approve" stateId="reviewing"/>
         </onentry>
 
         <transition event="approve" target="tracking"/>
@@ -28,7 +28,7 @@
     </state>
     <state id="tracking">
         <onentry>
-            <flow:task name="keepTracking" completeEvent="finalize"/>
+            <flow:task name="keepTracking" completeEvent="finalize" stateId="tracking"/>
         </onentry>
 
         <transition event="finalize" target="closed"/>

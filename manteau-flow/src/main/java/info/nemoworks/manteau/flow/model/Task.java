@@ -20,6 +20,11 @@ public class Task extends Action {
     @Setter
     private String name;
 
+
+    @Getter
+    @Setter
+    private String stateId;
+
     @Getter
     @Setter
     private String completeEvent;
@@ -71,7 +76,7 @@ public class Task extends Action {
         if (trace.getPre(trace.getHead()).getTask() != this)
             return false;
 
-        if (trigger("GOTO_" + trace.getHead().getTask().getName(), null)) {
+        if (trigger("GOTO_" + this.getStateId(), null)) {
             trace.append(this, Trace.ORIGIN.WITHDRAW);
             this.status = STATUS.ACCEPTED;
             log.info("task " + this.getName() + " uncompleted");

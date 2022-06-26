@@ -1,3 +1,3 @@
 # Manteau
 
-To manage data with no effort.
+Manteau is a set of projects for low code development. See readme in each module.

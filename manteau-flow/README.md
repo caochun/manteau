@@ -48,7 +48,7 @@ no sense.
 
 ![](docs/flow3.svg)
 
-### Trace based GOTO semantics in state transition
+### Trace based GOTO semantics for state transition
 
 The flexibility needed in these business scenarios concludes as a *GOTO* mechanism where the state can transition to
 another beyond the machine's basic structure. In the original semantics of the machine execution, when a normal event

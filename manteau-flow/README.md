@@ -19,6 +19,14 @@ apache [commons-scxml](https://commons.apache.org/proper/commons-scxml/) impleme
 However in some business situation, the flow needs to be more flexible. For example, the reviewing steps could be
 hierarchical (a team scope reviewing followed by a department scope one). If the department reviewer is not happy with
 the bid content, he can decide to return the bid to team reviewer or directly to the editor, shown as the red arrow.
+Further, if the editor makes revision on the bid according to a reject opinion from some department reviewer, he might
+have options to submit to the team reviewer again following the original reviewing flow, or he could directly submit to
+the department reviewer.
 
 ![](docs/flow2.svg)
+
+Adding this possible transition into the state machine model is a solution. However, some domestic organization might
+have a considerable tall hierarchy of management which usually results in very long reviewing chains. Modeling all those
+possible transitions makes the model itself messy. In addition, whether these transitions can happen is constrained
+business rules.
 

@@ -5,24 +5,25 @@
 
 state urgentChoice <<choice>>
 
-creating --> editing : create
+creating -right-> editing : create
 
-editing --> editing : save
+editing -left-> editing : save
 
-editing -->  team_reviewing : submit
+editing -down->  team_reviewing : submit
+team_reviewing -up-> editing : reject
 
-team_reviewing --> urgentChoice : submit
+team_reviewing -right-> urgentChoice : submit
 
-urgentChoice --> company_reviewing : if urgent
-urgentChoice --> dept_reviewing : if not
-
+urgentChoice -right-> company_reviewing : if urgent
+urgentChoice -down-> dept_reviewing : if not
 
 dept_reviewing --> company_reviewing : submit
 
 company_reviewing --> tracking : approve
 
-team_reviewing --> editing : reject
 
+company_reviewing -[#red,dashed]-> dept_reviewing : reject
+company_reviewing -[#red,dashed]-> team_reviewing : reject
 
 tracking -down-> tracking : track
 tracking --> [*] : close

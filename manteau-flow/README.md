@@ -54,6 +54,22 @@ The flexibility needed in these business scenarios concludes as a *GOTO* mechani
 another beyond the machine's basic structure. In the original semantics of the machine execution, when a normal event
 occurs, if there is a transition match the event it moves from the active state to the state specified by the
 transition. The *GOTO* mechanism introduces a special kind of event, say event whose name starts with "_GOTO_" with a
-payload of a state name (id). On any GOTO event, the state machine jump to the destination state identified by the event
-payload.
+payload of a state identification (this is just one possible implementation). On any GOTO event, the state machine jump
+to the destination state identified by the event.
+
+This GOTO mechanism virtually equals to adding/removing transitions into the model on-the-fly. Of course the rationality
+of runtime transitions (which transition can be added or removed) needs to be specified in business models as well. In
+the aforementioned *flexible* processes, the valid states where a reviewing process can go back is those that exist in
+the execution trace of the machine. Formally balabala (needs a formal definition of such business rules here).
+
+Therefore, the execution engine for state machines needs to record execution trace for each machine instance. Each node
+in the trace contains the identification of the corresponding state as well as other information about the
+entering of the state, including timestamp and other context variables. As each state can be entered multiple times, a
+unique identification of that entering should be one of the context variables so that the trace can be constructed
+correctly when more than one state become active simultaneously.
+
+
+Business rules for GOTO can be extended as needed. For example, we can 
+
+
 

@@ -68,8 +68,10 @@ entering of the state, including timestamp and other context variables. As each 
 unique identification of that entering should be one of the context variables so that the trace can be constructed
 correctly when more than one state become active simultaneously.
 
-
-Business rules for GOTO can be extended as needed. For example, we can 
+Business rules for GOTO can be extended as needed. For example, some scenario might allow a state be *pulled back* even
+a transition to the next state has already completed (the actual state is its following state) as long as the task for
+the current state is not started (in a sense of business) yet. Handling this rule need to modeling the lifecycle of a
+task for some state in a finer level. 
 
 
 

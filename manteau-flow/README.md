@@ -48,7 +48,7 @@ no sense.
 
 ![](docs/flow3.svg)
 
-### Trace based GOTO semantics for state transition
+### GOTO semantics for state transition
 
 The flexibility needed in these business scenarios concludes as a *GOTO* mechanism where the state can transition to
 another beyond the machine's basic structure. In the original semantics of the machine execution, when a normal event
@@ -56,6 +56,8 @@ occurs, if there is a transition match the event it moves from the active state 
 transition. The *GOTO* mechanism introduces a special kind of event, say event whose name starts with "_GOTO_" with a
 payload of a state identification (this is just one possible implementation). On any GOTO event, the state machine jump
 to the destination state identified by the event.
+
+#### Trace based dynamic transition
 
 This GOTO mechanism virtually equals to adding/removing transitions into the model on-the-fly. Of course the rationality
 of runtime transitions (which transition can be added or removed) needs to be specified in business models as well. In
@@ -68,10 +70,22 @@ entering of the state, including timestamp and other context variables. As each 
 unique identification of that entering should be one of the context variables so that the trace can be constructed
 correctly when more than one state become active simultaneously.
 
+##### State Pull-back
+
 Business rules for GOTO can be extended as needed. For example, some scenario might allow a state be *pulled back* even
-a transition to the next state has already completed (the actual state is its following state) as long as the task for
+a transition to the next state has already finished (the current active state is its following state) as long as the
+task for
 the current state is not started (in a sense of business) yet. Handling this rule need to modeling the lifecycle of a
-task for some state in a finer level. 
+task for some state in a finer level.
 
+![](docs/flow4.svg)
 
+Building a runtime transition and triggering a *GOTO* thus takes the internal lifecycle state of the current active
+state into account.
 
+#### Organizational-structure-driven workflow
+
+Common business flows are approval workflows. Such workflows always mirror the organizational structure. Their
+definitions thus can be abstract. For example, the term of *two-level approval* implies an approval workflow that goes
+from a low level manager to a high one. The corresponding state set can be inferred with the structure of the
+organization and GOTO transitions can be validated against the structure.
